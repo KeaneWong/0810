@@ -8,7 +8,7 @@ var Colors = {
 };
 
 	window.addEventListener('load',init,false);
-	init();
+
 	function init(){
 
 		createScene();
