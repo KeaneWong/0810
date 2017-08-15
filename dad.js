@@ -8,7 +8,7 @@ var Colors = {
 };
 
 	window.addEventListener('load',init,false);
-	init();
+	// init();
 	function init(){
 
 		createScene();
@@ -21,7 +21,9 @@ var Colors = {
 
 	var scene, camera, fieldOfView, aspectRatio, nearPlane, farPlane, HEIGHT, WIDTH, renderer, container;
 
+
 	function createScene(){
+		console.log('here');
 		HEIGHT = window.innerHeight;
 		WIDTH = window.innerWidth;
 
@@ -31,11 +33,10 @@ var Colors = {
 		fieldOfView = 60;
 		nearPlane = 1;
 		farPlane = 1000;
-		camera = THREE.PerspectiveCamera(fieldOfView,aspectRatio,nearPlane,farPlane);
+		camera = new THREE.PerspectiveCamera(fieldOfView,aspectRatio,nearPlane,farPlane);
 		camera.position.x= 0;
 		camera.position.y = 200;
 		camera.position.z = 100;
-
 
 		renderer= new THREE.WebGLRenderer({ antialias: true});
 		renderer.setSize(WIDTH, HEIGHT);
