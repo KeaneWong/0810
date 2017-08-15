@@ -31,13 +31,13 @@ var Colors = {
 		fieldOfView = 60;
 		nearPlane = 1;
 		farPlane = 1000;
-		camera = THREE.PerspectiveCamera(fieldOfView,aspectRatio,nearPlane,farPlane);
+		camera = new THREE.PerspectiveCamera(fieldOfView,aspectRatio,nearPlane,farPlane);
 		camera.position.x= 0;
 		camera.position.y = 200;
 		camera.position.z = 100;
 
 
-		renderer= new THREE.WebGLRenderer({ antialias: true});
+		renderer = new THREE.WebGLRenderer({ antialias: true});
 		renderer.setSize(WIDTH, HEIGHT);
 		renderer.shadowMap.enabled = true;
 		container = document.getElementById('world');
@@ -50,7 +50,7 @@ var Colors = {
 	WIDTH = window.innerWidth;
 	renderer.setSize(WIDTH, HEIGHT);
 	camera.aspect = WIDTH / HEIGHT;
-	camera.updateProjectionMatrix();
+	
 
 	}
 
