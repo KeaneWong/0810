@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Happy Birthday Dad</title>
+
+<script src= "/js/three.min.js"></script>
+<script src = "dad.js"></script>
+</head>
+<body>
+<h1> Hi</h1>
+<div id = "world"></div>
+<style >
+#world {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background: linear-gradient(#e4e0ba, #f7d9aa);
+
+}
+</style>
+</body>
+
+
+
+
+<script id= "vertexShader" type="x-shader/x-vertex">
+uniform sampler2D u_heightMap;
+uniform float u_time;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+attribute vec3 position;
+
+void main()
+{
+    vec3 pos = position;
+    vec2 offset1 = vec2(0.8, 0.4) * u_time * 0.1;
+    vec2 offset2 = vec2(0.6, 1.1) * u_time * 0.1;
+    float hight1 = texture2D(u_heightMap, uv + offset1).r * 0.02;
+    float hight2 = texture2D(u_heightMap, uv + offset2).r * 0.02;
+    pos.z += hight1 + hight2; 
+    vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );
+    gl_Position = projectionMatrix * mvPosition;
+} 
+
+</script>
+
+<script id="fragment_shader" type="x-shader/x-fragment">
+    void main( void ) 
+    {
+        gl_FragColor = vec4(0, 0, 1, .5);    
+    }
+</script>
+
+
+
+
+<!--<script src= "js/three.min.js"></script>
+<script src="three.js"> </script>-->
+
+</html>
