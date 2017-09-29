@@ -1,5 +1,6 @@
-var Colors = {
+Colors = {
 	red:0xf25346,
+	yellow: 0xffc999,
 	white:0xd8d0d1,
 	brown:0x59332e,
 	pink:0xF5986E,
@@ -54,7 +55,7 @@ var uniforms = {
 		camera.position.y = 150;
 		camera.position.z = 500;
 
-		renderer = new THREE.WebGLRenderer({ antialias: true});
+		renderer= new THREE.WebGLRenderer({ antialias: true});
 		renderer.setSize(WIDTH, HEIGHT);
 		renderer.shadowMap.enabled = true;
 		renderer.setClearColor(Colors.blue,1);
@@ -68,18 +69,19 @@ var uniforms = {
 	WIDTH = window.innerWidth;
 	renderer.setSize(WIDTH, HEIGHT);
 	camera.aspect = WIDTH / HEIGHT;
-	
+	camera.updateProjectionMatrix();
 
 	}
 
 	Sea = function(){
-		var seaGeo = new THREE.PlaneGeometry(1000,1000,32,32);
+		var seaGeo = new THREE.PlaneGeometry(1000,1000,64,64);
 	//	var material = new THREE.MeshPhongMaterial({color:Colors.seablue, shininess: 30, transparent:true});
 		var material = new THREE.ShaderMaterial({vertexShader: document.getElementById('vertexShader').textContent, 
 												fragmentShader: document.getElementById('fragment_shader').textContent,
 												side: THREE.DoubleSide,
 												wireframe: true,
-												uniforms: uniforms
+												uniforms: uniforms,
+												
 												})
 		this.mesh = new THREE.Mesh(seaGeo,material);
 		this.mesh.position.y = 100;
@@ -118,25 +120,30 @@ var uniforms = {
 		console.log(this.mesh.position);
 		var person1 = new Person();
 		person1.mesh.position.y+=13;
-		person1.mesh.position.x-=7;
+		person1.mesh.position.x-=6;
 		this.mesh.add(person1.mesh);
 		var person2 = new Person();
 		person2.mesh.position.y+=13;
-		//person2.mesh.position.x;
+		person2.mesh.position.x += 1;
 		this.mesh.add(person2.mesh);
 		var person3 = new Person();
 		person3.mesh.position.y+=13;
-		person3.mesh.position.x+=7;
+		person3.mesh.position.x+=8;
 		this.mesh.add(person3.mesh);
+		var person4 = new Person();
+		person4.mesh.position.y += 13;
+		person4.mesh.position.x -= 13;
+		person4.mesh.scale.set(1.2,1.2,1.2);
+		this.mesh.add(person4.mesh);
 		
-
+		console.log(this.mesh.position);
 
 
 	}
 
 	Person = function(){
 		var geom = new THREE.BoxGeometry(6,6,0.5);
-		var mater = new THREE.MeshBasicMaterial({color:Colors.white});
+		var mater = new THREE.MeshBasicMaterial({color:Colors.yellow});
 		this.mesh = new THREE.Mesh(geom,mater);
 		this.mesh.recieveShadow = true;
 		var hairGeo = new THREE.BoxGeometry(6,2,.5);
@@ -150,17 +157,69 @@ var uniforms = {
 	}
 	
 	var sea;
+	var cloud1;
+	var cloud2;
+	var cloud3;
+	var cloud4;
 	function createSea(){
 		sea = new Sea();
-		boat = new Boat();
-		
 		sea.mesh.position.y = 100;
+		boat = new Boat();
+		cloud1 = new Cloud();
+		scene.add(cloud1.mesh);
+		 cloud2 = new Cloud();
+		scene.add(cloud2.mesh);
+		cloud3 = new Cloud();
+		scene.add(cloud3.mesh);
+		cloud4 = new Cloud();
+		scene.add(cloud4.mesh);
+
+		var fireBall = new Sun();
+		scene.add(fireBall.mesh);
+
 		scene.add(sea.mesh);
 		scene.add(boat.mesh);
 		
 
 	}
+	Cloud = function(){
+		var cloudGeo = new THREE.BoxGeometry(30,30,20);
+		var cloudMat = new THREE.MeshBasicMaterial({
+			color: Colors.white,
+			side: THREE.DoubleSide
 
+
+			})
+		var cloud = new THREE.Mesh(cloudGeo,cloudMat);
+		var cloudBlobs = 3 + Math.floor(Math.random()*5);
+		console.log(cloudBlobs);
+		for(var i = 3; i< cloudBlobs; i++){
+			var cloudGeom = new THREE.BoxGeometry(20+Math.random()*10, 20+Math.random()*10,20);
+			var cloudBlob = new THREE.Mesh(cloudGeom,cloudMat);
+			cloudBlob.position.y+=(Math.sin(Math.random() * 6.28) * 10);
+			cloudBlob.position.x+=(Math.sin(Math.random() * 6.28) * 10);
+			cloud.add(cloudBlob);
+				}
+			
+			cloud.position.y = 300 + (Math.sin(Math.random()*6.28) * 100);
+			cloud.position.x += (Math.sin(Math.random()*6.28) * 100);
+			cloud.position.z = -200;
+			this.mesh = cloud;
+			//cloud.position.y = 100;
+	
+
+
+	}
+	Sun = function(){
+		var sunGeo = new THREE.SphereGeometry(50, 12, 12);
+		var sunMat = new THREE.MeshBasicMaterial({color: 0xffcc00});
+		var sun = new THREE.Mesh(sunGeo,sunMat);
+		sun.position.y = 450;
+		sun.position.z = -200;
+		sun.position.x = -150;
+		this.mesh = sun;
+
+	}
 	function createLights(){
 		hemisphereLight= new THREE.HemisphereLight(0xffffff,0xffffff,1);
 		hemisphereLight.color.setHSL(0.6,1,0.6);
@@ -185,7 +244,14 @@ var uniforms = {
 	function animate(){
 		time = new Date().getTime() - startTime;
 		boat.mesh.position.y += Math.sin(time/1000)/15;
-		sea.mesh.material.uniforms.u_time.value = time * 0.00250;
+		cloud1.mesh.position.x += Math.sin(time/1000) * .15;
+		cloud2.mesh.position.x += -Math.sin(time/1000) * .1;
+		cloud3.mesh.position.x += Math.sin(time/1000) * .2;
+		cloud4.mesh.position.x += -Math.sin(time/1000) * .1;
+
+
+		
+		sea.mesh.material.uniforms.u_time.value = time * 0.000750;
 		//console.log(sea.mesh.material.uniforms.u_time);
 		renderer.render(scene,camera);
 		if(sea.mesh.material.uniforms.u_heightMap.value == null){
